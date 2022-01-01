@@ -1,0 +1,52 @@
+{% extends './index.html' %}
+
+{% block body %}
+{% block content %}
+
+<script type="text/javascript">
+    function getWeather() {
+        fetch('http://localhost:5000/weather')
+            .then(res => {
+                res.json()
+                    .then(data => {
+                        const weatherIcon = document.getElementById("weather-icon");
+                        weatherIcon.src = "http://openweathermap.org/img/wn/" + data.weatherIcon + "@2x.png";
+                        const weatherDescription = document.getElementById("weather-description");
+                        weatherDescription.innerText = data.weatherDescription;
+                        const weatherTemperature = document.getElementById("weather-temperature");
+                        weatherTemperature.innerHTML = `Temperature: ${data.temperature} C&#176;`;
+                        const weatherHumidity = document.getElementById("weather-humidity");
+                        weatherHumidity.innerHTML = `Humidity: ${data.humidity} %`;
+                        const weatherPressure = document.getElementById("weather-pressure");
+                        weatherPressure.innerHTML = `Pressure: ${data.pressure} hPa`;
+                    })
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+    getWeather();
+    setInterval(getWeather, 60 * 60 * 1000);
+
+</script>
+<div class="main">
+    <div class="clock-container">
+        <canvas width=250 height=250></canvas>
+        {% for lan in networkDevices %}
+        <p>{{ lan }}</p>
+        {% endfor %}
+    </div>
+    <div class="weather-container" id="local-weather-container">
+        <img id="weather-icon" />
+        <div id="weather-description" style="text-transform: capitalize; font-size: 2rem;"></div>
+        <div id="weather-data">
+            <p id="weather-temperature"></p>
+            <p id="weather-humidity"></p>
+            <p id="weather-pressure"></p>
+        </div>
+    </div>
+</div>
+<script type="application/javascript" src="js/analogClock.js"></script>
+{% endblock %}
+
+{% endblock %}

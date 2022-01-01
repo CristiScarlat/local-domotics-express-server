@@ -1,0 +1,23 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon -e js,html app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Raluca",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "bme680-sensor": "^1.0.0",
+    "cron": "^1.8.2",
+    "express": "^4.17.1",
+    "i2c-bus": "^5.2.2",
+    "nodemon": "^2.0.7",
+    "nunjucks": "^3.2.3",
+    "onoff": "^6.0.3",
+    "rpi-wifi-connection": "^1.0.17"
+  }
+}
