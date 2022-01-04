@@ -1,13 +1,15 @@
 const express = require('express')
+var cors = require('cors')
 const path = require('path');
 const fs = require('fs');
 const nunjucks = require('nunjucks');
 const { networkInfo } = require('./services/osInfo');
 const { getForecastFiveDays, getWeather } = require('./services/openWeather');
 
-const app = express()
-
 const PORT = 5000
+const app = express();
+
+app.use(cors());
 
 app.use(express.static(__dirname + '/public'))
 

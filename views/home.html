@@ -5,8 +5,16 @@
 
 <script type="text/javascript">
     function getWeather() {
-        fetch('http://localhost:5000/weather')
+        fetch('/weather', { 
+            mode: 'no-cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            referrerPolicy: 'no-referrer',
+        })
             .then(res => {
+                console.log({res})
                 res.json()
                     .then(data => {
                         const weatherIcon = document.getElementById("weather-icon");
@@ -20,6 +28,7 @@
                         const weatherPressure = document.getElementById("weather-pressure");
                         weatherPressure.innerHTML = `Pressure: ${data.pressure} hPa`;
                     })
+                    .catch(error => console.log("json", error))
             })
             .catch(error => {
                 console.log(error)
@@ -27,7 +36,6 @@
     }
     getWeather();
     setInterval(getWeather, 60 * 60 * 1000);
-
 </script>
 <div class="main">
     <div class="clock-container">
