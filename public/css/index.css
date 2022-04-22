@@ -1,12 +1,14 @@
 body {
+    font-family: 'Libre Baskerville', serif;
+    /* font-family: 'Orbitron', sans-serif; */
+    font-size: 12px;
     background: black;
     color: whitesmoke;
-    font-size: 12px;
 }
 
 .main {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
     padding: 0 1rem;
 }
@@ -16,8 +18,11 @@ body {
     font-size: 16px;
 }
 
+.clock-container p {
+    font-size: 24px;
+}
+
 .weather-container {
-    width: 50%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -27,7 +32,7 @@ body {
     width: 150px;
 }
 
-#weather-data p{
+#weather-data p {
     font-size: 2rem;
 }
 
@@ -36,13 +41,23 @@ body {
     margin-top: 1rem;
 }
 
+.separator-vertical {
+    border: 1px solid #2f42cc;
+    height: 20rem;
+}
+
+#digital-clock {
+    font-size: 50px;
+}
+
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
     .main {
         display: flex;
         flex-direction: column-reverse;
     }
-    canvas{
+
+    canvas {
         display: none;
     }
 }

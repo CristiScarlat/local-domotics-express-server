@@ -3,58 +3,43 @@
 {% block body %}
 {% block content %}
 
-<script type="text/javascript">
-    function getWeather() {
-        fetch('/weather', { 
-            mode: 'no-cors', // no-cors, *cors, same-origin
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            referrerPolicy: 'no-referrer',
-        })
-            .then(res => {
-                console.log({res})
-                res.json()
-                    .then(data => {
-                        const weatherIcon = document.getElementById("weather-icon");
-                        weatherIcon.src = "http://openweathermap.org/img/wn/" + data.weatherIcon + "@2x.png";
-                        const weatherDescription = document.getElementById("weather-description");
-                        weatherDescription.innerText = data.weatherDescription;
-                        const weatherTemperature = document.getElementById("weather-temperature");
-                        weatherTemperature.innerHTML = `Temperature: ${data.temperature} C&#176;`;
-                        const weatherHumidity = document.getElementById("weather-humidity");
-                        weatherHumidity.innerHTML = `Humidity: ${data.humidity} %`;
-                        const weatherPressure = document.getElementById("weather-pressure");
-                        weatherPressure.innerHTML = `Pressure: ${data.pressure} hPa`;
-                    })
-                    .catch(error => console.log("json", error))
-            })
-            .catch(error => {
-                console.log(error)
-            })
-    }
-    getWeather();
-    setInterval(getWeather, 60 * 60 * 1000);
-</script>
 <div class="main">
     <div class="clock-container">
-        <canvas width=250 height=250></canvas>
+        <!-- <canvas width=250 height=250></canvas> -->
+        <div id="digital-clock"></div>
+        <div style="font-size: 56px">{{ DHTdata.temperature }} C&#176;</div>
+
         {% for lan in networkDevices %}
         <p>{{ lan }}</p>
         {% endfor %}
+
     </div>
+    <div class="separator-vertical"></div>
     <div class="weather-container" id="local-weather-container">
-        <img id="weather-icon" />
-        <div id="weather-description" style="text-transform: capitalize; font-size: 2rem;"></div>
+        <img id="weather-icon" src="{{ currentWeather.weatherIcon }}" alt="..."/>
+        <div id="weather-description" style="text-transform: capitalize; font-size: 2rem;">{{ currentWeather.weatherDescription }}</div>
         <div id="weather-data">
-            <p id="weather-temperature"></p>
-            <p id="weather-humidity"></p>
-            <p id="weather-pressure"></p>
+            <p id="weather-temperature">Temperature: {{ currentWeather.temperature }} C&#176;</p>
+            <p id="weather-humidity">Humidity: {{ currentWeather.humidity }} %</p>
+            <p id="weather-pressure">Pressure: {{ currentWeather.pressure }} hPa</p>
         </div>
     </div>
 </div>
 <script type="application/javascript" src="js/analogClock.js"></script>
+<script type="text/javascript">
+    setInterval(() => {
+        window.location.reload();
+    }, 60 * 60 * 1000);
+
+    setInterval(() => {
+        const date = new Date();
+        const clock = document.getElementById("digital-clock");
+        const minutes = date.getMinutes() > 9 ? date.getMinutes() : `0${date.getMinutes()}`;
+        const seconds = date.getSeconds() > 9 ? date.getSeconds() : `0${date.getSeconds()}`;
+        clock.innerHTML = `<div id="digital-clock-time">${date.getHours()}:${minutes}:${seconds}</div>
+                        <div id="digital-clock-date">${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}</div>`;
+    }, 1000);
+</script>
 {% endblock %}
 
 {% endblock %}

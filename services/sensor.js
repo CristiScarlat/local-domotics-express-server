@@ -1,5 +1,6 @@
 const { Bme680 } = require('bme680-sensor');
 const bme680 = new Bme680(1, 0x76);
+const sensor = require("node-dht-sensor");
 
 let bmeSensorData = {}
 
@@ -27,4 +28,13 @@ const getBmeSensorData = () => {
     return {temperature, pressure, humidity, gasResistance}
 }
 
-module.exports = { initBmeSensor, getBmeSensorData }
+const readDHTSensor = (dhtType, pinNumber) => {
+  return sensor.read(dhtType, pinNumber);
+}
+
+const getDHTSensorData = () => {
+    return readDHTSensor(11, 4);
+}
+
+
+module.exports = { initBmeSensor, getBmeSensorData, getDHTSensorData }

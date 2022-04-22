@@ -5,6 +5,7 @@ const fs = require('fs');
 const nunjucks = require('nunjucks');
 const { networkInfo } = require('./services/osInfo');
 const { getForecastFiveDays, getWeather } = require('./services/openWeather');
+const { getDHTSensorData } = require('./services/sensor');
 
 const PORT = 5000
 const app = express();
@@ -20,30 +21,45 @@ nunjucks.configure('./views', {
     express: app
 })
 
-app.get('/weather', async (req, res) => {
-    const log = `${new Date().toLocaleString()} - get weather.\n`
-    fs.appendFile(path.resolve('logs/logs.txt'), log, function (err) {
-        if (err) throw err;
-        console.log('Saved!');
-    });
+let currentWeather = {};
 
-    weatherAPIRes = await getWeather()
 
-    const currentWeather = {
-        city: weatherAPIRes.data.name,
-        temperature: weatherAPIRes.data.main.temp,
-        pressure: weatherAPIRes.data.main.pressure,
-        humidity: weatherAPIRes.data.main.humidity,
-        weatherIcon: weatherAPIRes.data.weather[0].icon,
-        weatherDescription: weatherAPIRes.data.weather[0].description
-    }
-    res.status(200);
-    res.json(currentWeather);
-})
+const getCurrentWeather = () => {
+    getWeather()
+    .then(weatherAPIRes => {
+        currentWeather = {
+            city: weatherAPIRes.data.name,
+            temperature: weatherAPIRes.data.main.temp,
+            pressure: weatherAPIRes.data.main.pressure,
+            humidity: weatherAPIRes.data.main.humidity,
+            weatherIcon: `http://openweathermap.org/img/wn/${weatherAPIRes.data.weather[0].icon}@2x.png`,
+            weatherDescription: weatherAPIRes.data.weather[0].description
+        }
+        console.log(currentWeather);
+    })
+    .catch(error => {
+        currentWeather = {};
+        const log = `${new Date().toLocaleString()} - get-weather-error: ${error}.\n`;
+        fs.appendFile(path.resolve('logs/logs.txt'), log, function (err) {
+            if (err) throw err;
+            console.log('Saved!');
+        });
+    })
+}
+
+getCurrentWeather();
+setInterval(getCurrentWeather, 60 * 60 * 1000);
+
+let DHTdata = {};
+
+DHTdata = getDHTSensorData();
+setInterval(() => {
+    DHTdata = getDHTSensorData()
+}, 60000);
 
 app.get('/', async (req, res) => {
-    //const bmeSensorData = await getBmeSensorData()
-    //if (idTick) clearInterval(idTick)
+    
+    /////////////////////////////////////////////
     const netInfo = networkInfo()
     const networkDevices = []
     Object.keys(netInfo).forEach(k => {
@@ -51,7 +67,7 @@ app.get('/', async (req, res) => {
     })
 
     res.status(200)
-    res.render('home.html', { networkDevices })
+    res.render('home.html', { networkDevices, currentWeather, DHTdata })
 })
 
 //////start web server//////////////////
