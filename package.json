@@ -14,6 +14,7 @@
     "bme680-sensor": "^1.0.0",
     "cors": "^2.8.5",
     "cron": "^1.8.2",
+    "dotenv": "^16.0.3",
     "express": "^4.17.1",
     "i2c-bus": "^5.2.2",
     "node-dht-sensor": "^0.4.3",

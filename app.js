@@ -1,11 +1,13 @@
-const express = require('express')
-var cors = require('cors')
+
+const cors = require('cors')
 const path = require('path');
 const fs = require('fs');
 const nunjucks = require('nunjucks');
 const { networkInfo } = require('./services/osInfo');
 const { getForecastFiveDays, getWeather } = require('./services/openWeather');
 const { getDHTSensorData } = require('./services/sensor');
+require('dotenv').config();
+const express = require('express');
 
 const PORT = 5000
 const app = express();
@@ -56,6 +58,34 @@ DHTdata = getDHTSensorData();
 setInterval(() => {
     DHTdata = getDHTSensorData()
 }, 60000);
+
+app.get('/weather', async (req, res) => {
+    let log = null
+    try{
+        weatherAPIRes = await getWeather()
+        log = `${new Date().toLocaleString()} - get weather.\n`
+    }
+    catch(error){
+        log = `${new Date().toLocaleString()} - get-weather-error: ${error}.\n`
+        console.error(error)
+    }
+
+    fs.appendFile(path.resolve('logs/logs.txt'), log, function (err) {
+        if (err) throw err;
+        console.log('Saved!');
+    });
+
+    const currentWeather = {
+        city: weatherAPIRes.data.name,
+        temperature: weatherAPIRes.data.main.temp,
+        pressure: weatherAPIRes.data.main.pressure,
+        humidity: weatherAPIRes.data.main.humidity,
+        weatherIcon: weatherAPIRes.data.weather[0].icon,
+        weatherDescription: weatherAPIRes.data.weather[0].description
+    }
+    res.status(200);
+    res.json(currentWeather);
+})
 
 app.get('/', async (req, res) => {
     

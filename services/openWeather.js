@@ -25,7 +25,8 @@ const formatData = (data) => {
 }
 
 const getWeather = async () => {
-    const appId = "6da5dcbf6b42c5bead5a34db18af474a";
+    console.log(process.env.OPENWEATHER_APP_APIKEY)
+    const appId = process.env.OPENWEATHER_APP_APIKEY;
     const city = "timisoara";
     const units = "metric"
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${appId}&units=${units}`;
@@ -37,8 +38,10 @@ const getWeather = async () => {
     }
 }
 
+//https://api.openweathermap.org/data/2.5/weather?q=timisoara&appid=process.env.OPENWEATHER_APP_APIKEY&units=metric
+
 const getForecastFiveDays = async () => {
-    const appId = "6da5dcbf6b42c5bead5a34db18af474a";
+    const appId = process.env.OPENWEATHER_APP_APIKEY;
     const city = "timisoara";
     //const units = "metric"
     const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${appId}&units=${units}`;
